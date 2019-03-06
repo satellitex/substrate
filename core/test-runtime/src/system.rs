@@ -52,7 +52,7 @@ pub fn nonce_of(who: AccountId) -> u64 {
 	storage::get_or(&who.to_keyed_vec(NONCE_OF), 0)
 }
 
-/// Get authorities ar given block.
+/// Get authorities for given block.
 pub fn authorities() -> Vec<Ed25519AuthorityId> {
 	let len: u32 = storage::unhashed::get(well_known_keys::AUTHORITY_COUNT)
 		.expect("There are always authorities in test-runtime");
