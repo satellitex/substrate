@@ -22,6 +22,7 @@ use substrate_primitives::Ed25519AuthorityId;
 use grandpa::VoterSet;
 use parity_codec::{Encode, Decode};
 use log::{debug, info};
+use substrate_telemetry::{telemetry, CONSENSUS_INFO};
 
 use std::cmp::Ord;
 use std::fmt::Debug;
@@ -259,6 +260,9 @@ where
 				// apply this change: make the set canonical
 				info!(target: "finality", "Applying authority set change forced at block #{:?}",
 					  change.canon_height);
+				telemetry!(CONSENSUS_INFO; "afg.applying_forced_authority_set_change";
+					"block" => ?change.canon_height
+				);
 
 				let median_last_finalized = match change.delay_kind {
 					DelayKind::Best { ref median_last_finalized } => median_last_finalized.clone(),
@@ -322,6 +326,9 @@ where
 				if let Some(change) = change {
 					info!(target: "finality", "Applying authority set change scheduled at block #{:?}",
 						  change.canon_height);
+					telemetry!(CONSENSUS_INFO; "afg.applying_scheduled_authority_set_change";
+						"block" => ?change.canon_height
+					);
 
 					self.current_authorities = change.next_authorities;
 					self.set_id += 1;
